@@ -1,0 +1,4 @@
+.cache
+gin-bin
+node_modules
+static

@@ -1,0 +1,19 @@
+{
+	"name": "qual-o-mat",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"build": "parcel build --out-dir static assets/main.css",
+		"watch": "parcel watch --out-dir static assets/main.css"
+	},
+	"keywords": [],
+	"author": "bake",
+	"license": "GPLv3",
+	"dependencies": {
+		"bootstrap": "^4.3.1"
+	},
+	"devDependencies": {
+		"parcel-bundler": "^1.12.3"
+	}
+}

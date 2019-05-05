@@ -1,0 +1,12 @@
+{{define "title"}}
+	Wahlen
+{{end}}
+
+{{define "main"}}
+	<h2>Wahlen</h2>
+	<ul>
+		{{range .Elections}}
+			<li><a href="/{{.ID}}">{{.Name}} {{.Date.Format "2006"}}</a></li>
+		{{end}}
+	</ul>
+{{end}}

@@ -1,0 +1,16 @@
+{{define "title"}}
+	{{.Election.Name}} {{.Election.Date.Format "2006"}}
+{{end}}
+
+{{define "main"}}
+	<h2>{{.Election.Name}} {{.Election.Date.Format "2006"}}</h2>
+
+	{{range .Parties}}
+		<div>
+			{{.Name}}: {{.Overlap}}
+			<div class="progress">
+				<div class="progress-bar" role="progressbar" aria-valuenow="{{.Overlap}}" aria-valuemin="0" aria-valuemax="{{len $.Statements}}" style="width: calc(100% / {{len $.Statements}} * {{.Overlap}});"></div>
+			</div>
+		</div>
+	{{end}}
+{{end}}

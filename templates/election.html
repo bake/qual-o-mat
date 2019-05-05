@@ -1,0 +1,30 @@
+{{define "title"}}
+	{{.Election.Name}} {{.Election.Date.Format "2006"}}
+{{end}}
+
+{{define "main"}}
+	<h2>{{.Election.Name}} {{.Election.Date.Format "2006"}}</h2>
+
+	<form method="post">
+		{{range $stmt := .Statements}}
+			<div class="card mt-4">
+				<div class="card-body">
+					<h5 class="card-title">{{.Label}}</h5>
+					<p class="card-text">{{.Text}}</p>
+					{{range $.Answers}}
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="radio" name="{{$stmt.ID}}" id="stmt-{{$stmt.ID}}-answer-{{.ID}}" value="{{.ID}}">
+							<label class="form-check-label" for="stmt-{{$stmt.ID}}-answer-{{.ID}}">
+								{{.Message}}
+							</label>
+						</div>
+					{{end}}
+				</div>
+			</div>
+		{{end}}
+
+		<hr>
+
+		<button type="submit" class="btn btn-primary">Berechnen</button>
+	</form>
+{{end}}
