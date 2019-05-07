@@ -1,11 +1,13 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"sync"
 
 	"github.com/bake/qual-o-mat/qualomat"
 	"github.com/gorilla/mux"
+	"github.com/pkg/errors"
 )
 
 type server struct {
@@ -22,4 +24,12 @@ func newServer(qom *qualomat.QualOMat) *server {
 
 func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.router.ServeHTTP(w, r)
+}
+
+func (s *server) error(w http.ResponseWriter, err error, message string, code int) {
+	http.Error(w, message, code)
+	if message != "" {
+		err = errors.Wrap(err, message)
+	}
+	log.Println(err)
 }

@@ -32,23 +32,23 @@ func (s *server) handleElection() http.HandlerFunc {
 		defer s.mu.Unlock()
 		id, err := strconv.Atoi(mux.Vars(r)["id"])
 		if err != nil {
-			http.Error(w, "election id is not a number", 400)
+			s.error(w, errors.New("election id is not a number"), fmt.Sprintf("election id %v is not a number", mux.Vars(r)["id"]), 400)
 			return
 		}
 		if res.Election, err = s.qom.Election(id); err != nil {
-			http.Error(w, err.Error(), 500)
+			s.error(w, err, "could not get election", 500)
 			return
 		}
 		if res.Overview, err = res.Election.Overview(); err != nil {
-			http.Error(w, err.Error(), 500)
+			s.error(w, err, "could not get overview", 500)
 			return
 		}
 		if res.Statements, err = res.Election.Statements(); err != nil {
-			http.Error(w, err.Error(), 500)
+			s.error(w, err, "could not get statements", 500)
 			return
 		}
 		if res.Answers, err = res.Election.Answers(); err != nil {
-			http.Error(w, err.Error(), 500)
+			s.error(w, err, "could not get answers", 500)
 			return
 		}
 		tmpl.Execute(w, res)
@@ -83,32 +83,32 @@ func (s *server) handleElectionVote() http.HandlerFunc {
 		defer s.mu.Unlock()
 		id, err := strconv.Atoi(mux.Vars(r)["id"])
 		if err != nil {
-			http.Error(w, "election id is not a number", 400)
+			s.error(w, err, "election id is not a number", 400)
 			return
 		}
 		election, err := s.qom.Election(id)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("could not get election: %v", err), 500)
+			s.error(w, err, "could not get election", 500)
 			return
 		}
 		overview, err := election.Overview()
 		if err != nil {
-			http.Error(w, fmt.Sprintf("could not get overview: %v", err), 500)
+			s.error(w, err, "could not get overview", 500)
 			return
 		}
 		answers, err := election.Answers()
 		if err != nil {
-			http.Error(w, fmt.Sprintf("could not get answers: %v", err), 500)
+			s.error(w, err, "could not get answers", 500)
 			return
 		}
 		opinions, err := election.Opinions()
 		if err != nil {
-			http.Error(w, fmt.Sprintf("could not get opinions: %v", err), 500)
+			s.error(w, err, "could not get opinions", 500)
 			return
 		}
 		parties, err := election.Parties()
 		if err != nil {
-			http.Error(w, fmt.Sprintf("could not get parties: %v", err), 500)
+			s.error(w, err, "could not get parties", 500)
 			return
 		}
 		partyMap := map[int]*party{}
@@ -117,12 +117,12 @@ func (s *server) handleElectionVote() http.HandlerFunc {
 		}
 		statements, err := election.Statements()
 		if err != nil {
-			http.Error(w, fmt.Sprintf("could not get statements: %v", err), 500)
+			s.error(w, err, "could not get statements", 500)
 			return
 		}
 
 		if err := r.ParseForm(); err != nil {
-			http.Error(w, fmt.Sprintf("could not parse form: %v", err), 400)
+			s.error(w, err, "could not parse form", 400)
 			return
 		}
 		for stmtVal, answerVal := range r.Form {
