@@ -12,7 +12,7 @@
 
 	<div class="list-group">
 		{{range .Elections}}
-			<a href="/{{.ID}}" class="list-group-item list-group-item-action">
+			<a href="/election/{{.ID}}" class="list-group-item list-group-item-action">
 				{{.Name}} {{.Date.Format "2006"}}
 			</a>
 		{{end}}
