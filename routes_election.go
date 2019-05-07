@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"math"
 	"net/http"
 	"sort"
 	"strconv"
@@ -19,10 +20,14 @@ func (s *server) handleElection() http.HandlerFunc {
 	}
 	type response struct {
 		Election   *qualomat.Election
+		Overview   qualomat.Overview
 		Statements []qualomat.Statement
 		Answers    []qualomat.Answer
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
+		var res response
+		var err error
+
 		s.mu.Lock()
 		defer s.mu.Unlock()
 		id, err := strconv.Atoi(mux.Vars(r)["id"])
@@ -30,22 +35,23 @@ func (s *server) handleElection() http.HandlerFunc {
 			http.Error(w, "election id is not a number", 400)
 			return
 		}
-		election, err := s.qom.Election(id)
-		if err != nil {
+		if res.Election, err = s.qom.Election(id); err != nil {
 			http.Error(w, err.Error(), 500)
 			return
 		}
-		stmts, err := election.Statements()
-		if err != nil {
+		if res.Overview, err = res.Election.Overview(); err != nil {
 			http.Error(w, err.Error(), 500)
 			return
 		}
-		answers, err := election.Answers()
-		if err != nil {
+		if res.Statements, err = res.Election.Statements(); err != nil {
 			http.Error(w, err.Error(), 500)
 			return
 		}
-		tmpl.Execute(w, response{election, stmts, answers})
+		if res.Answers, err = res.Election.Answers(); err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+		tmpl.Execute(w, res)
 	}
 }
 
@@ -68,6 +74,7 @@ func (s *server) handleElectionVote() http.HandlerFunc {
 
 	type response struct {
 		Election   *qualomat.Election
+		Overview   qualomat.Overview
 		Parties    []party
 		Statements []qualomat.Statement
 	}
@@ -82,6 +89,16 @@ func (s *server) handleElectionVote() http.HandlerFunc {
 		election, err := s.qom.Election(id)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("could not get election: %v", err), 500)
+			return
+		}
+		overview, err := election.Overview()
+		if err != nil {
+			http.Error(w, fmt.Sprintf("could not get overview: %v", err), 500)
+			return
+		}
+		answers, err := election.Answers()
+		if err != nil {
+			http.Error(w, fmt.Sprintf("could not get answers: %v", err), 500)
 			return
 		}
 		opinions, err := election.Opinions()
@@ -108,26 +125,29 @@ func (s *server) handleElectionVote() http.HandlerFunc {
 			http.Error(w, fmt.Sprintf("could not parse form: %v", err), 400)
 			return
 		}
-		for stmts, answers := range r.Form {
+		for stmtVal, answerVal := range r.Form {
 			if len(answers) == 0 {
 				continue
 			}
-			stmt, err := strconv.Atoi(stmts)
+			stmt, err := strconv.Atoi(stmtVal)
 			if err != nil {
 				continue
 			}
-			answer, err := strconv.Atoi(answers[0])
+			answer, err := strconv.Atoi(answerVal[0])
 			if err != nil {
+				continue
+			}
+			if answer == len(answers) {
 				continue
 			}
 			for _, o := range opinions {
-				if o.Statement == stmt && o.Answer == answer {
-					partyMap[o.Party].Overlap++
+				if o.Statement == stmt {
+					partyMap[o.Party].Overlap += 2 - int(math.Abs(float64(o.Answer-answer)))
 				}
 			}
 		}
 
-		res := response{election, []party{}, statements}
+		res := response{election, overview, []party{}, statements}
 		for _, p := range partyMap {
 			res.Parties = append(res.Parties, *p)
 		}
