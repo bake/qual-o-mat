@@ -3,7 +3,13 @@
 {{end}}
 
 {{define "main"}}
-	<h2>{{.Election.Name}} {{.Election.Date.Format "2006"}}</h2>
+	<div class="jumbotron bg-light">
+		<h1 class="display-4">{{.Election.Name}} {{.Election.Date.Format "2006"}}</h1>
+		<p class="lead">
+			<a href="{{.Overview.Info}}">Mehr Informationen</a>,
+			<a href="{{.Overview.DataSource}}">Datenquelle</a>.
+		</p>
+	</div>
 
 	<form method="post">
 		{{range $stmt := .Statements}}
@@ -11,14 +17,17 @@
 				<div class="card-body">
 					<h5 class="card-title">{{.Label}}</h5>
 					<p class="card-text">{{.Text}}</p>
-					{{range $.Answers}}
-						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="{{$stmt.ID}}" id="stmt-{{$stmt.ID}}-answer-{{.ID}}" value="{{.ID}}">
-							<label class="form-check-label" for="stmt-{{$stmt.ID}}-answer-{{.ID}}">
-								{{.Message}}
+
+					<div class="btn-group btn-group-toggle" data-toggle="buttons">
+						{{range $.Answers}}
+							<label class="btn btn-sm btn-outline-primary">
+								<input type="radio" name="{{$stmt.ID}}" id="stmt-{{$stmt.ID}}-answer-{{.ID}}" value="{{.ID}}" autocomplete="off"> {{.Message}}
 							</label>
-						</div>
-					{{end}}
+						{{end}}
+						<label class="btn btn-sm btn-outline-primary active">
+							<input type="radio" name="{{$stmt.ID}}" id="stmt-{{$stmt.ID}}-answer-{{len $.Answers}}" value="{{len $.Answers}}" autocomplete="off" checked> Überspringen
+						</label>
+					</div>
 				</div>
 			</div>
 		{{end}}

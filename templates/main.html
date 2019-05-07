@@ -9,8 +9,18 @@
 		<title>{{block "title" .}}Start{{end}} - Qual-O-Mat</title>
 	</head>
 	<body>
-		<div class="container">
+		<nav class="navbar navbar-light bg-light">
+			<div class="container">
+				<a class="navbar-brand" href="/">
+					Qual-O-Mat
+				</a>
+			</div>
+		</nav>
+
+		<div class="container py-4">
 			{{block "main" .}}{{end}}
 		</div>
+
+		<script src="/static/main.js"></script>
 	</body>
 </html>

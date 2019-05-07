@@ -3,10 +3,18 @@
 {{end}}
 
 {{define "main"}}
-	<h2>Wahlen</h2>
-	<ul>
+	<div class="jumbotron bg-light">
+		<h1 class="display-4">Qual-O-Mat</h1>
+		<p class="lead">Ein Nachbau des <a href="https://www.wahl-o-mat.de/">Wahl-O-Mat</a>.</p>
+		<hr class="my-4">
+		<p>Die hier verwendeten Daten sind <a href="https://github.com/gockelhahn/qual-o-mat-data">frei verfügbar</a>. Die Source liegt ebenfalls auf <a href="https://github.com/bake/qual-o-mat">GitHub</a>.</p>
+	</div>
+
+	<div class="list-group">
 		{{range .Elections}}
-			<li><a href="/{{.ID}}">{{.Name}} {{.Date.Format "2006"}}</a></li>
+			<a href="/{{.ID}}" class="list-group-item list-group-item-action">
+				{{.Name}} {{.Date.Format "2006"}}
+			</a>
 		{{end}}
-	</ul>
+	</div>
 {{end}}

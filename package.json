@@ -4,16 +4,20 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"build": "parcel build --out-dir static assets/main.css",
-		"watch": "parcel watch --out-dir static assets/main.css"
+		"build": "parcel build --out-dir static assets/main.js",
+		"watch": "parcel watch --out-dir static assets/main.js"
 	},
 	"keywords": [],
 	"author": "bake",
 	"license": "GPLv3",
 	"dependencies": {
-		"bootstrap": "^4.3.1"
+		"bootstrap": "^4.3.1",
+		"jquery": "^3.4.1",
+		"main.css": "^1.0.0",
+		"popper.js": "^1.15.0"
 	},
 	"devDependencies": {
-		"parcel-bundler": "^1.12.3"
+		"parcel-bundler": "^1.12.3",
+		"sass": "^1.20.1"
 	}
 }
