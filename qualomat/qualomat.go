@@ -2,7 +2,6 @@ package qualomat
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"path"
 
@@ -19,10 +18,10 @@ func New(path string) *QualOMat {
 }
 
 type Election struct {
-	ID   int
-	Name string
-	Date date
-	Path string
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+	Date date   `json:"date"`
+	Path string `json:"path"`
 
 	answers    []Answer
 	comments   []Comment
@@ -57,7 +56,6 @@ func (qom *QualOMat) Election(id int) (*Election, error) {
 }
 
 func decode(file string, v interface{}) error {
-	fmt.Println("decode", file)
 	r, err := os.Open(file)
 	if err != nil {
 		return errors.Wrapf(err, "could not open %s", file)
@@ -70,8 +68,8 @@ func decode(file string, v interface{}) error {
 }
 
 type Answer struct {
-	ID      int
-	Message string
+	ID      int    `json:"id"`
+	Message string `json:"message"`
 }
 
 func (e *Election) Answers() ([]Answer, error) {
@@ -83,8 +81,8 @@ func (e *Election) Answers() ([]Answer, error) {
 }
 
 type Comment struct {
-	ID   int
-	Text string
+	ID   int    `json:"id"`
+	Text string `json:"text"`
 }
 
 func (e *Election) Comments() ([]Comment, error) {
@@ -96,11 +94,11 @@ func (e *Election) Comments() ([]Comment, error) {
 }
 
 type Opinion struct {
-	ID        int
-	Party     int
-	Statement int
-	Answer    int
-	Comment   int
+	ID        int `json:"id"`
+	Party     int `json:"party"`
+	Statement int `json:"statement"`
+	Answer    int `json:"answer"`
+	Comment   int `json:"comment"`
 }
 
 func (e *Election) Opinions() ([]Opinion, error) {
@@ -112,10 +110,10 @@ func (e *Election) Opinions() ([]Opinion, error) {
 }
 
 type Overview struct {
-	Title      string
-	Date       date
-	Info       string
-	DataSource string
+	Title      string `json:"title"`
+	Date       date   `json:"date"`
+	Info       string `json:"info"`
+	DataSource string `json:"data_source"`
 }
 
 func (e *Election) Overview() (Overview, error) {
@@ -127,9 +125,9 @@ func (e *Election) Overview() (Overview, error) {
 }
 
 type Party struct {
-	ID       int
-	Name     string
-	Longname string
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	Longname string `json:"longname"`
 }
 
 func (e *Election) Parties() ([]Party, error) {
@@ -141,10 +139,10 @@ func (e *Election) Parties() ([]Party, error) {
 }
 
 type Statement struct {
-	ID       int
-	Category int
-	Label    string
-	Text     string
+	ID       int    `json:"id"`
+	Category int    `json:"category"`
+	Label    string `json:"label"`
+	Text     string `json:"text"`
 }
 
 func (e *Election) Statements() ([]Statement, error) {
