@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"math"
 	"net/http"
@@ -32,7 +31,7 @@ func (s *server) handleElection() http.HandlerFunc {
 		defer s.mu.Unlock()
 		id, err := strconv.Atoi(mux.Vars(r)["id"])
 		if err != nil {
-			s.error(w, errors.New("election id is not a number"), fmt.Sprintf("election id %v is not a number", mux.Vars(r)["id"]), 400)
+			s.error(w, err, "election id is not a number", 400)
 			return
 		}
 		if res.Election, err = s.qom.Election(id); err != nil {
