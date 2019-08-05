@@ -9,7 +9,7 @@ list of elections and their questions. It is a webserver written in Go.
 
 ```bash
 $ npm install
-$ npm build
+$ npm run-script build
 $ go build
 $
 ```
